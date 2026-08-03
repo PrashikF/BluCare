@@ -1,0 +1,178 @@
+# =========================
+# Core AI / LLM
+# =========================
+
+@context-engineering
+@agent-memory
+@planning-and-task-breakdown
+@implement
+@software-architecture
+@code-review-and-quality
+@systematic-debugging
+@debugging-and-error-recovery
+@performance-optimization
+@security-and-hardening
+@documentation-and-adrs
+@verification-before-completion
+
+# =========================
+# Python
+# =========================
+
+@super-code/python
+@pytest-skill
+@test-driven-development
+@source-driven-development
+@spec-driven-development
+
+# =========================
+# FastAPI
+# =========================
+
+@api-and-interface-design
+@api-designer
+@api-analyzer
+@api-integration
+
+# =========================
+# LangChain
+# =========================
+
+@langchain
+@langchain-rag
+@langchain-tools
+@langchain-agents
+
+# =========================
+# LangGraph
+# =========================
+
+@langgraph
+@langgraph-orchestration
+@multi-agent-orchestration
+
+# =========================
+# LangSmith
+# =========================
+
+@langsmith
+@evaluation
+@observability-and-instrumentation
+
+# =========================
+# RAG
+# =========================
+
+@rag-engineering
+@retrieval-engineering
+@context-engineering
+@similarity-search-patterns
+@vector-database-engineer
+@vector-index-tuning
+
+# =========================
+# Qdrant
+# =========================
+
+@qdrant
+@vector-database-engineer
+@vector-index-tuning
+
+# =========================
+# Embeddings
+# =========================
+
+@train-sentence-transformers
+@huggingface-best
+@embedding-optimization
+@embedding-evaluation
+
+# =========================
+# Retrieval
+# =========================
+
+@hybrid-search
+@bm25
+@semantic-search
+@query-rewriting
+@query-expansion
+@metadata-filtering
+@reranking
+@cross-encoder
+@parent-document-retriever
+@multi-query-retriever
+@context-compression
+
+# =========================
+# Redis
+# =========================
+
+@redis-cli
+@redis
+@redis-cache
+@redis-streams
+
+# =========================
+# Databases
+# =========================
+
+@postgresql-cli
+@sql-pro
+@sql-optimization-patterns
+
+# =========================
+# Docker
+# =========================
+
+@docker
+@docker-compose
+
+# =========================
+# CI/CD
+# =========================
+
+@github-actions-debugger
+@ci-cd-and-automation
+
+# =========================
+# Monitoring
+# =========================
+
+@observability-and-instrumentation
+@logging
+@monitoring
+
+# =========================
+# Deployment
+# =========================
+
+@vps-server-management
+@server-management
+
+# =========================
+# Medical
+# =========================
+
+@medical-rag
+@medical-knowledge
+@clinical-guidelines
+@medical-safety
+
+# =========================
+# Evaluation
+# =========================
+
+@evaluation
+@benchmarking
+@hallucination-detection
+@trust-calibrator
+
+# =========================
+# Production
+# =========================
+
+@performance-optimization
+@security-and-hardening
+@clean-architecture
+@design-patterns
+@code-review-and-quality

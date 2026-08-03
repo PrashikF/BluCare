@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Medical Triage Chat</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; display: flex; justify-content: center; }
+        .chat-container { width: 100%; max-width: 600px; background: white; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); overflow: hidden; display: flex; flex-direction: column; height: 85vh; }
+        .header { background: #007bff; color: white; padding: 15px 20px; font-size: 18px; font-weight: bold; text-align: center; }
+        .messages { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+        .message { max-width: 80%; padding: 12px 16px; border-radius: 12px; line-height: 1.4; word-wrap: break-word; }
+        .user-message { background: #007bff; color: white; align-self: flex-end; border-bottom-right-radius: 2px; }
+        .agent-message { background: #f1f3f4; color: #333; align-self: flex-start; border-bottom-left-radius: 2px; }
+        .agent-message p { margin: 0 0 10px 0; }
+        .agent-message p:last-child { margin: 0; }
+        .agent-message ul, .agent-message ol { margin: 0 0 10px 20px; padding: 0; }
+        .input-area { display: flex; padding: 15px; background: white; border-top: 1px solid #ddd; }
+        input[type="text"] { flex: 1; padding: 12px; border: 1px solid #ccc; border-radius: 24px; outline: none; font-size: 16px; }
+        button { background: #007bff; color: white; border: none; padding: 12px 20px; margin-left: 10px; border-radius: 24px; cursor: pointer; font-weight: bold; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .loading { font-size: 12px; color: #666; text-align: center; display: none; margin-top: 10px; }
+        #debug-info { padding: 10px; background: #eef; font-size: 12px; color: #555; text-align: center; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="header">AI Medical Triage Agent</div>
+    <div id="debug-info">Thread ID: <span id="thread-id">Starting...</span> | Stage: <span id="stage">Initializing...</span></div>
+    <div class="messages" id="messages"></div>
+    <div class="loading" id="loading">Agent is typing...</div>
+    <div class="input-area">
+        <input type="text" id="userInput" placeholder="Describe your symptoms..." onkeypress="handleEnter(event)">
+        <button id="sendBtn" onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+<script>
+    const API_URL = 'http://localhost:8000';
+    let currentThreadId = null;
+
+    // A tiny markdown parser just for bold and bullets to render the AI's diagnosis cleanly
+    function parseMarkdown(text) {
+        let html = text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n- (.*?)(?=\n|$)/g, '<li>$1</li>');
+        
+        // Wrap loose list items in ul
+        if (html.includes('<li>')) {
+            html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+        }
+        return '<p>' + html + '</p>';
+    }
+
+    function appendMessage(sender, text, isMarkdown=false) {
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `message ${sender === 'user' ? 'user-message' : 'agent-message'}`;
+        msgDiv.innerHTML = isMarkdown ? parseMarkdown(text) : text;
+        document.getElementById('messages').appendChild(msgDiv);
+        document.getElementById('messages').scrollTop = document.getElementById('messages').scrollHeight;
+    }
+
+    function setLoading(isLoading) {
+        document.getElementById('loading').style.display = isLoading ? 'block' : 'none';
+        document.getElementById('sendBtn').disabled = isLoading;
+        document.getElementById('userInput').disabled = isLoading;
+        if (!isLoading) {
+            document.getElementById('userInput').focus();
+        }
+    }
+
+    async function startSession() {
+        setLoading(true);
+        try {
+            const res = await fetch(`${API_URL}/session/start`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({})
+            });
+            const data = await res.json();
+            currentThreadId = data.thread_id;
+            document.getElementById('thread-id').innerText = currentThreadId;
+            document.getElementById('stage').innerText = 'central_agent';
+            appendMessage('agent', data.message);
+        } catch (err) {
+            appendMessage('agent', 'Error connecting to server. Is FastAPI running on port 8000?');
+        }
+        setLoading(false);
+    }
+
+    async function sendMessage() {
+        const input = document.getElementById('userInput');
+        const text = input.value.trim();
+        if (!text || !currentThreadId) return;
+
+        input.value = '';
+        appendMessage('user', text);
+        setLoading(true);
+
+        try {
+            const res = await fetch(`${API_URL}/session/message`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ thread_id: currentThreadId, message: text })
+            });
+            const data = await res.json();
+            document.getElementById('stage').innerText = data.stage;
+            appendMessage('agent', data.message, true);
+        } catch (err) {
+            appendMessage('agent', 'Error communicating with server.');
+        }
+        
+        setLoading(false);
+    }
+
+    function handleEnter(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    }
+
+    // Start
+    window.onload = startSession;
+</script>
+
+</body>
+</html>

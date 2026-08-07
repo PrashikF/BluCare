@@ -1,8 +1,8 @@
-// src/components/ui/Card.jsx
+// src/components/ui/GlassCard.jsx
 import React from 'react';
 import { cn } from '../../utils/cn';
 
-const Card = ({ children, className = '', hoverable = false, noisy = false, onClick }) => {
+const GlassCard = ({ children, className = '', hoverable = false, noisy = false, onClick }) => {
   return (
     <div
       onClick={onClick}
@@ -18,4 +18,4 @@ const Card = ({ children, className = '', hoverable = false, noisy = false, onCl
   );
 };
 
-export default Card;
+export default GlassCard;

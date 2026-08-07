@@ -1,14 +1,14 @@
 // src/components/ui/LoadingSkeleton.jsx
 import React from 'react';
-import Card from './Card';
+import GlassCard from './GlassCard';
 
 export const CardSkeleton = () => {
   return (
-    <Card className="space-y-4 animate-pulse">
+    <GlassCard className="space-y-4 animate-pulse">
       <div className="h-4 bg-bg-surface rounded-full w-1/3" />
       <div className="h-8 bg-bg-surface rounded-2xl w-2/3" />
       <div className="h-3 bg-bg-surface rounded-full w-1/2" />
-    </Card>
+    </GlassCard>
   );
 };
 

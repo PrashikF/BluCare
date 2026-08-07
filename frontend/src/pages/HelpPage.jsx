@@ -1,9 +1,9 @@
-// src/pages/HelpPage.jsx
+// src/pages/HelpPage.jsx - Help & Safety Center
 import React, { useState } from 'react';
 import PageContainer from '../components/ui/PageContainer';
 import SectionHeader from '../components/ui/SectionHeader';
 import AlertBanner from '../components/ui/AlertBanner';
-import Card from '../components/ui/Card';
+import GlassCard from '../components/ui/GlassCard';
 import { Mail, Phone, ChevronDown, ChevronUp } from 'lucide-react';
 
 const HelpPage = () => {
@@ -47,7 +47,7 @@ const HelpPage = () => {
         <h2 className="text-xl font-light text-primary">Frequently Asked Questions</h2>
         <div className="space-y-3">
           {faqs.map((faq, idx) => (
-            <Card key={idx} hoverable onClick={() => setOpenFaq(openFaq === idx ? -1 : idx)} className="space-y-2 cursor-pointer">
+            <GlassCard key={idx} hoverable onClick={() => setOpenFaq(openFaq === idx ? -1 : idx)} className="space-y-2 cursor-pointer">
               <div className="flex items-center justify-between">
                 <h3 className="text-sm font-medium text-primary">{faq.q}</h3>
                 {openFaq === idx ? <ChevronUp size={18} className="text-sage" /> : <ChevronDown size={18} className="text-subdued" />}
@@ -57,13 +57,13 @@ const HelpPage = () => {
                   {faq.a}
                 </p>
               )}
-            </Card>
+            </GlassCard>
           ))}
         </div>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
-        <Card className="space-y-3">
+        <GlassCard className="space-y-3">
           <div className="flex items-center gap-2 text-lavender font-semibold text-sm">
             <Mail size={18} /> Support Email
           </div>
@@ -71,15 +71,15 @@ const HelpPage = () => {
           <a href="mailto:support@ragblucare.ai" className="text-sm text-sage font-medium hover:underline block">
             support@ragblucare.ai
           </a>
-        </Card>
+        </GlassCard>
 
-        <Card className="space-y-3">
+        <GlassCard className="space-y-3">
           <div className="flex items-center gap-2 text-sage font-semibold text-sm">
             <Phone size={18} /> Emergency Helpline
           </div>
           <p className="text-xs text-subdued">Direct emergency triage hotline</p>
           <p className="text-sm text-primary font-medium">+91 94038 71129</p>
-        </Card>
+        </GlassCard>
       </div>
     </PageContainer>
   );

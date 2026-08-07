@@ -1,23 +1,6 @@
-const navLinks = [
-	{
-		id: "New Session",
-		title: "New Session",
-	},
-	{
-		id: "temporary Session",
-		title: "temporary Session",
-	},
-	{
-		id: "Journal",
-		title: "Journal",
-	},
-	{
-		id: "About",
-		title: "About",
-	},
-];
+// constants/index.js - BluCare+ Platform Data & Showcases
 
-const cocktailLists = [
+const workflowSteps = [
 	{
 		name: "Symptom Assessment",
 		country: "AI",
@@ -44,7 +27,7 @@ const cocktailLists = [
 	},
 ];
 
-const mockTailLists = [
+const coreIntelligence = [
 	{
 		name: "Real-Time Risk Detection",
 		country: "AI",
@@ -55,7 +38,7 @@ const mockTailLists = [
 		name: "Ambulance Locator",
 		country: "GPS",
 		detail: "Nearby",
-		price: "SOS",
+		price: "SOS 108",
 	},
 	{
 		name: "Medical History Mapping",
@@ -71,41 +54,12 @@ const mockTailLists = [
 	},
 ];
 
-const profileLists = [
-	{
-		imgPath: "/images/profile1.png",
-	},
-	{
-		imgPath: "/images/profile2.png",
-	},
-	{
-		imgPath: "/images/profile3.png",
-	},
-	{
-		imgPath: "/images/profile4.png",
-	},
-];
-
-const featureLists = [
-	"Perfectly Tuned Algorithms",
-	"Refined Diagnostic Precision",
-	"Instant, Reliable Insights",
-	"Intelligently Processed & Delivered",
-];
-
-const goodLists = [
-	"Trusted Medical Knowledge",
-	"Structured Care Protocols",
-	"Expert-Guided Assessment",
-	"Personalized Health Insights",
-];
-
 const storeInfo = {
 	heading: "AI-Powered Healthcare Platform",
 	description:
-		"Providing intelligent symptom analysis, severity prediction, and emergency assistance powered by advanced medical AI systems.",
+		"Providing intelligent symptom analysis, medical RAG, and emergency assistance powered by advanced medical AI systems.",
 	contact: {
-		phone: "+91 98765 43210",
+		phone: "+91 94038 71129",
 		email: "support@ragblucare.ai",
 	},
 };
@@ -118,23 +72,16 @@ const openingHours = [
 
 const socials = [
 	{
-		name: "Instagram",
-		icon: "/images/insta.png",
-		url: "#",
-	},
-	{
 		name: "X (Twitter)",
-		icon: "/images/x.png",
-		url: "#",
+		url: "https://x.com",
 	},
 	{
-		name: "Facebook",
-		icon: "/images/fb.png",
-		url: "#",
+		name: "GitHub",
+		url: "https://github.com",
 	},
 ];
 
-const allCocktails = [
+const architectureFeatures = [
 	{
 		id: 1,
 		name: "Smart Follow-Up Engine",
@@ -165,19 +112,15 @@ const allCocktails = [
 		image: "",
 		title: "Early Detection. Smarter Decisions.",
 		description:
-			"The platform predicts possible 3 conditions and categorizes them by severity level, helping you understand emergency and next best steps with greater clarity.",
+			"The platform predicts possible conditions and categorizes them by severity level, helping you understand emergency and next best steps with greater clarity.",
 	},
 ];
 
 export {
-	navLinks,
-	cocktailLists,
-	mockTailLists,
-	profileLists,
-	featureLists,
-	goodLists,
+	workflowSteps,
+	coreIntelligence,
 	openingHours,
 	storeInfo,
 	socials,
-	allCocktails,
+	architectureFeatures,
 };

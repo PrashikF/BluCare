@@ -1,9 +1,9 @@
-// src/components/ui/Button.jsx
+// src/components/ui/GlowButton.jsx
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 
-const Button = ({
+const GlowButton = ({
   children,
   onClick,
   variant = 'primary',
@@ -47,4 +47,4 @@ const Button = ({
   );
 };
 
-export default Button;
+export default GlowButton;

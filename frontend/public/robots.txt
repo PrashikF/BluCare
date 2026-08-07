@@ -1,0 +1,8 @@
+# BluCare+ Production Robots File
+User-agent: *
+Allow: /
+Disallow: /app/
+Disallow: /sign-in/
+Disallow: /sign-up/
+
+Sitemap: https://blucare.ai/sitemap.xml

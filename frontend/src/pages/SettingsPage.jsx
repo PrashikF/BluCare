@@ -1,24 +1,45 @@
-// src/pages/SettingsPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '@clerk/clerk-react';
 import PageContainer from '../components/ui/PageContainer';
 import SectionHeader from '../components/ui/SectionHeader';
-import Card from '../components/ui/Card';
-import Button from '../components/ui/Button';
+import GlassCard from '../components/ui/GlassCard';
+import GlowButton from '../components/ui/GlowButton';
 import { useToast } from '../contexts/ToastContext';
+import { userApi } from '../utils/api';
 import { Cpu, Database, Sliders } from 'lucide-react';
 
 const SettingsPage = () => {
   const { addToast } = useToast();
+  const { getToken } = useAuth();
   const [selectedProtocol, setSelectedProtocol] = useState('standard-care');
   const [sensitivity, setSensitivity] = useState('85');
   const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = () => {
+  useEffect(() => {
+    async function loadSettings() {
+      try {
+        const data = await userApi.getSettings({ getToken });
+        if (data) {
+          if (data.selectedProtocol) setSelectedProtocol(data.selectedProtocol);
+          if (data.sensitivity) setSensitivity(data.sensitivity);
+        }
+      } catch (err) {
+        // Retain fallback
+      }
+    }
+    loadSettings();
+  }, [getToken]);
+
+  const handleSave = async () => {
     setIsSaving(true);
-    setTimeout(() => {
-      setIsSaving(false);
+    try {
+      await userApi.updateSettings({ selectedProtocol, sensitivity }, { getToken });
       addToast('Care protocol & sensitivity preferences saved successfully!', 'success');
-    }, 600);
+    } catch (err) {
+      addToast(`Failed to save settings: ${err.message}`, 'error');
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -32,7 +53,7 @@ const SettingsPage = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-8 space-y-6">
-          <Card className="space-y-4">
+          <GlassCard className="space-y-4">
             <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-light pb-3">
               <Cpu size={18} className="text-sage" /> Clinical Care Protocol Standard
             </div>
@@ -57,10 +78,11 @@ const SettingsPage = () => {
               ].map((proto) => (
                 <label
                   key={proto.id}
-                  className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${selectedProtocol === proto.id
+                  className={`flex items-start gap-3 p-4 rounded-2xl border cursor-pointer transition-all ${
+                    selectedProtocol === proto.id
                       ? 'bg-sage/10 border-sage text-primary'
                       : 'bg-bg-surface border-light text-secondary hover:border-secondary'
-                    }`}
+                  }`}
                 >
                   <input
                     type="radio"
@@ -76,9 +98,9 @@ const SettingsPage = () => {
                 </label>
               ))}
             </div>
-          </Card>
+          </GlassCard>
 
-          <Card className="space-y-4">
+          <GlassCard className="space-y-4">
             <div className="flex items-center gap-2 text-primary font-semibold text-sm border-b border-light pb-3">
               <Sliders size={18} className="text-lavender" /> Assessment Sensitivity & Precision
             </div>
@@ -102,11 +124,11 @@ const SettingsPage = () => {
                 </p>
               </div>
             </div>
-          </Card>
+          </GlassCard>
         </div>
 
         <div className="lg:col-span-4 space-y-4">
-          <Card className="space-y-4">
+          <GlassCard className="space-y-4">
             <h3 className="text-sm font-semibold text-primary flex items-center gap-2">
               <Database size={16} className="text-sage" /> System Status
             </h3>
@@ -124,10 +146,10 @@ const SettingsPage = () => {
                 <span className="text-emerald-400 font-semibold">Certified</span>
               </div>
             </div>
-            <Button onClick={handleSave} loading={isSaving} size="sm" className="w-full">
+            <GlowButton onClick={handleSave} loading={isSaving} size="sm" className="w-full">
               Save Preferences
-            </Button>
-          </Card>
+            </GlowButton>
+          </GlassCard>
         </div>
       </div>
     </PageContainer>

@@ -7,8 +7,14 @@ See this project's Step 2 MD file for the full rationale behind the ordering.
 import logging
 
 from langchain.chains.query_constructor.base import load_query_constructor_runnable
-from langchain_community.query_constructors.qdrant import QdrantTranslator
-from langchain_community.vectorstores.utils import maximal_marginal_relevance
+try:
+    # pyrefly: ignore [missing-import]
+    from langchain_community.query_constructors.qdrant import QdrantTranslator
+    # pyrefly: ignore [missing-import]
+    from langchain_community.vectorstores.utils import maximal_marginal_relevance
+except ImportError:
+    QdrantTranslator = None
+    maximal_marginal_relevance = None
 from langchain_core.documents import Document
 from qdrant_client import models
 
@@ -22,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 # metadata_key="metadata" matches langchain_qdrant.QdrantVectorStore's default
 # payload structure from ingestion: {"page_content": ..., "metadata": {...}}
-_translator = QdrantTranslator(metadata_key="metadata")
+_translator = QdrantTranslator(metadata_key="metadata") if QdrantTranslator else None
 _query_constructor = None
 
 
@@ -45,7 +51,7 @@ def get_query_constructor():
             llm=llm,
             document_contents=DOCUMENT_CONTENT_DESCRIPTION,
             attribute_info=METADATA_FIELD_INFO,
-            allowed_comparators=_translator.allowed_comparators,
+            allowed_comparators=_translator.allowed_comparators if _translator else None,
         )
     return _query_constructor
 

@@ -294,24 +294,28 @@ def build_graph():
     graph.add_edge("post_diagnosis_chat", END)
 
 
-    # Attempt to use Redis checkpointer for production, fallback to SqliteSaver
+    # Attempt to use Redis checkpointer for production, fallback to SqliteSaver/MemorySaver
     try:
+        # pyrefly: ignore [missing-import]
         from langgraph.checkpoint.redis import RedisSaver
+        # pyrefly: ignore [missing-import]
         from redis import Redis
-        # Connect to local Redis (you would configure this via env vars in production)
-        redis_conn = Redis(host='localhost', port=6379, db=0)
-        # Ping to check if it's alive
+        redis_conn = Redis.from_url(settings.redis_url)
         redis_conn.ping()
         checkpointer = RedisSaver(redis_conn)
-        print("Using Redis for state checkpointing.")
+        print(f"Using Redis for state checkpointing ({settings.redis_url}).")
     except Exception:
-        print("Redis not available. Falling back to SqliteSaver for persistent state.")
-        import sqlite3
-        from langgraph.checkpoint.sqlite import SqliteSaver
-        
-        # Connect to SQLite file (check_same_thread=False allows FastAPI threads to share it)
-        sqlite_conn = sqlite3.connect("checkpoints.sqlite", check_same_thread=False)
-        checkpointer = SqliteSaver(sqlite_conn)
+        try:
+            import sqlite3
+            # pyrefly: ignore [missing-import]
+            from langgraph.checkpoint.sqlite import SqliteSaver
+            sqlite_conn = sqlite3.connect("checkpoints.sqlite", check_same_thread=False)
+            checkpointer = SqliteSaver(sqlite_conn)
+            print("Using SQLite for state checkpointing (checkpoints.sqlite).")
+        except Exception:
+            from langgraph.checkpoint.memory import MemorySaver
+            checkpointer = MemorySaver()
+            print("Using MemorySaver for state checkpointing.")
 
     return graph.compile(checkpointer=checkpointer)
 

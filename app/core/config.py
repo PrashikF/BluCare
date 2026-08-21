@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     # Groq API Credentials
     groq_api_key: str = "mock_groq_key"
     groq_api_key_secondary: str | None = None
-    groq_model: str = "llama-3.3-70b-versatile"
+    groq_model: str = "qwen/qwen3.6-27b"
 
     # LangSmith Observability Tracing
     langchain_tracing_v2: bool = True

@@ -30,7 +30,7 @@ class CentralAgentOutput(BaseModel):
     """Unified output from the central medical agent."""
     symptom_updates: SymptomUpdates = Field(description="Only the patient facts that changed during this turn.")
 
-    decision: Literal["ask_question", "call_rag", "final_synthesis", "call_remedy", "post_diagnosis_chat"] = Field(
+    decision: Literal["ask_question", "call_rag", "final_synthesis", "call_remedy", "call_facilities", "post_diagnosis_chat"] = Field(
         description="The next action to take."
     )
     response_to_user: str = Field(

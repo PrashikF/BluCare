@@ -33,6 +33,7 @@ Rules:
    - If 'Retrieved conditions' are provided below, do NOT call RAG again. You MUST choose `decision='final_synthesis'` or `decision='ask_question'`.
    - **Post-Prediction Phase**: If 'Predicted Conditions' are provided below, the diagnosis is already done! 
      * If the user explicitly asks for remedies/treatments, use `decision='call_remedy'`.
+     * If the user asks for nearby hospitals, clinics, or ambulances, use `decision='call_facilities'`. Extract their Lat/Lon from their message context if provided.
      * If the user asks general questions about the diagnosis, use `decision='post_diagnosis_chat'`.
 4. Be concise, intelligent, and deeply analytical. Treat retrieved conditions as possibilities, not confirmed diagnoses.
 

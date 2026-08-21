@@ -122,7 +122,9 @@ def condition_synthesis_node(state: TriageState) -> dict:
         f"Alternative conditions:\n{causes_list}\n\n"
         f"Explanation:\n{result.explanation}\n\n"
         f"Recommendation:\n- {result.recommendation}\n\n"
-        f"Would you like some home remedies, OTC options, or have any other questions about this diagnosis?"
+        f"Would you like some home remedies, OTC options, or have any other questions about this diagnosis?\n\n"
+        f"[ACTION:Find nearby hospitals for {result.most_likely_condition.name}]\n"
+        f"[ACTION:Give me home remedies for {result.most_likely_condition.name}]"
     )
 
     conditions_dump = [result.most_likely_condition.model_dump()] + [c.model_dump() for c in result.alternative_conditions]
@@ -242,9 +244,38 @@ def post_diagnosis_chat_node(state: TriageState) -> dict:
     }
 
 
+def facilities_node(state: TriageState) -> dict:
+    from app.core.llm import get_llm
+    from app.rag.tools.facilities_tool import find_nearby_facilities
+    from langchain_core.messages import SystemMessage, ToolMessage
+    
+    llm_with_tools = get_llm(temperature=0).bind_tools([find_nearby_facilities])
+    
+    sys_msg = SystemMessage(content="You are a medical routing assistant. The user wants to find nearby hospitals or ambulances. You MUST call the `find_nearby_facilities` tool. Extract their Latitude (lat) and Longitude (lon) from the [SYSTEM CONTEXT] in their message. Determine if they need a 'hospital' or 'ambulance'. Extract their disease from the conversation (use 'general' if none).")
+    
+    response = llm_with_tools.invoke([sys_msg] + state["messages"][-4:])
+    
+    if response.tool_calls:
+        tool_call = response.tool_calls[0]
+        tool_msg = find_nearby_facilities.invoke(tool_call)
+        
+        final_llm = get_llm(temperature=0.3)
+        final_sys = SystemMessage(content="You are BluCare. Present the scraped facilities (if any) to the user warmly and concisely. Use markdown links for the Google Maps links.")
+        
+        final_resp = final_llm.invoke([final_sys] + state["messages"][-4:] + [response, ToolMessage(content=str(tool_msg), tool_call_id=tool_call["id"])])
+        
+        return {
+            "messages": [{"role": "assistant", "content": final_resp.content}],
+            "stage": "post_prediction",
+        }
+    else:
+        return {
+            "messages": [{"role": "assistant", "content": "I couldn't locate your GPS coordinates to find nearby facilities. Please ensure location services are enabled."}],
+            "stage": "post_prediction",
+        }
+
+
 def route_after_agent(state: TriageState) -> str:
-
-
     decision = state.get("router_decision")
     if decision == "call_rag":
         if state.get("stage") == "rag":
@@ -255,6 +286,8 @@ def route_after_agent(state: TriageState) -> str:
         return "condition_synthesis"
     elif decision == "call_remedy":
         return "remedy"
+    elif decision == "call_facilities":
+        return "facilities"
     elif decision == "post_diagnosis_chat":
         return "post_diagnosis_chat"
     else:
@@ -270,6 +303,7 @@ def build_graph():
 
     graph.add_node("condition_synthesis", condition_synthesis_node)
     graph.add_node("remedy", remedy_node)
+    graph.add_node("facilities", facilities_node)
     graph.add_node("post_diagnosis_chat", post_diagnosis_chat_node)
 
     graph.set_entry_point("central_agent")
@@ -282,6 +316,7 @@ def build_graph():
             "rag_retrieval": "rag_retrieval",
             "condition_synthesis": "condition_synthesis",
             "remedy": "remedy",
+            "facilities": "facilities",
             "post_diagnosis_chat": "post_diagnosis_chat",
             "wait_for_user": END,
         }
@@ -291,6 +326,7 @@ def build_graph():
     graph.add_edge("distillation", "condition_synthesis")
     graph.add_edge("condition_synthesis", END)
     graph.add_edge("remedy", END)
+    graph.add_edge("facilities", END)
     graph.add_edge("post_diagnosis_chat", END)
 
 

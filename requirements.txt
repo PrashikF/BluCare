@@ -28,3 +28,7 @@ cryptography==42.0.8
 
 # --- Utilities ---
 python-dotenv==1.0.1
+
+# --- Web Scraping (Facilities Agent) ---
+selenium==4.21.0
+webdriver-manager==4.0.1

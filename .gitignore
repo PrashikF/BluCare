@@ -19,8 +19,10 @@ frontend/dist/
 dist/
 
 # Databases & Checkpoints
-*.sqlite
-checkpoints.sqlite
+*.sqlite*
+checkpoints.sqlite*
+*.env.local
+f.example
 
 # OS & macOS
 .DS_Store

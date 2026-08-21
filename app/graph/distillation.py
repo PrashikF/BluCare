@@ -14,9 +14,9 @@ def distill_rag_docs(symptom_facts: dict, raw_docs: list) -> list:
     # Use the fast, cheap 8B model specifically for this task to save time/money
     # We use the secondary API key to avoid rate limiting the main 70b model
     fast_llm = ChatGroq(
-        model_name="llama-3.1-8b-instant",
+        model=settings.groq_model,
         temperature=0.0,
-        api_key=settings.groq_api_key_secondary or settings.groq_api_key
+        groq_api_key=settings.groq_api_key,
     )
 
     system_prompt = """You are a medical data extraction intern.

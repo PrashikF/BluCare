@@ -11,9 +11,9 @@ def summarize_chat(chat_history_text: str) -> str:
     from app.core.config import settings
     # Use a faster, cheaper model for summarization using the secondary API key to avoid rate limits
     llm = ChatGroq(
-        model_name="llama-3.1-8b-instant",
+        model=settings.groq_model,
         temperature=0.1,
-        api_key=settings.groq_api_key_secondary or settings.groq_api_key
+        groq_api_key=settings.groq_api_key,
     )
     prompt = "Summarize the following medical conversation history concisely in 2-3 sentences. Focus on symptoms, timeline, and patient details. Omit pleasantries."
     response = llm.invoke([SystemMessage(content=prompt), HumanMessage(content=chat_history_text)])

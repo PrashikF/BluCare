@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Medical Triage Workflow</title>
+    <style>
+        body {
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            margin: 0;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #1e293b;
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+        p.subtitle {
+            color: #64748b;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+            text-align: center;
+            max-width: 600px;
+        }
+        .diagram-container {
+            background-color: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 1200px;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Multi-Agent Medical Triage Architecture</h1>
+    <p class="subtitle">An end-to-end flowchart demonstrating the AI's diagnostic and remedy generation process, from patient input to specialized Ayurvedic treatments.</p>
+
+    <div class="diagram-container">
+        <div class="mermaid">
+        flowchart TD
+            %% Styling
+            classDef user fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:white,font-weight:bold,rx:10px,ry:10px;
+            classDef agent fill:#8b5cf6,stroke:#7c3aed,stroke-width:3px,color:white,font-weight:bold,rx:8px,ry:8px;
+            classDef retrieval fill:#ec4899,stroke:#db2777,stroke-width:2px,color:white,rx:8px,ry:8px;
+            classDef db fill:#f97316,stroke:#ea580c,stroke-width:2px,color:white,rx:5px,ry:5px;
+            classDef synthesis fill:#0ea5e9,stroke:#0284c7,stroke-width:2px,color:white,rx:8px,ry:8px;
+            classDef output fill:#10b981,stroke:#059669,stroke-width:2px,color:white,font-weight:bold,rx:10px,ry:10px;
+            classDef subgraphStyle fill:#f8fafc,stroke:#cbd5e1,stroke-width:2px,stroke-dasharray: 5 5;
+            
+            %% External Input
+            PatientInput(["🧑🏽‍⚕️ Patient Input<br/><small>(e.g., 'I have a severe headache and nausea')</small>"]):::user
+            
+            %% Main Architecture
+            subgraph CoreAIEngine ["🧠 LangGraph Multi-Agent Architecture"]
+                direction TB
+                
+                RoutingAgent{"🤖 Central Routing Agent<br/><small>(Analyzes symptoms & intent)</small>"}:::agent
+                
+                subgraph DiagnosticPipeline ["🔍 Phase 1: Diagnostic Pipeline"]
+                    direction TB
+                    MedRAG["🔍 Medical RAG Node<br/><small>(Searches symptom combinations)</small>"]:::retrieval
+                    ClinicalDB[("📚 Qdrant Vector DB<br/><small>(Clinical Textbooks)</small>")]:::db
+                    ContextDistiller["⚙️ Context Distillation Node<br/><small>(Filters irrelevant medical noise)</small>"]:::retrieval
+                    ConditionSynthesis["🩺 Condition Synthesis Node<br/><small>(Diagnoses exact disease)</small>"]:::synthesis
+                    DiagnosisOutput(["📋 Diagnosis Output<br/><small>(Most Likely Condition & Explanation)</small>"]):::output
+                end
+                
+                subgraph ActionPipeline ["⚡ Phase 2: Action & Resolution Agents"]
+                    direction TB
+                    RemedyAgent{"🌿 Remedy Agent<br/><small>(Triggers Ayurvedic & Home Treatments)</small>"}:::agent
+                    RemedyDB[("🌱 Qdrant Vector DB<br/><small>(Ayurvedic & OTC Data)</small>")]:::db
+                    
+                    FacilitiesAgent{"🚑 Facilities Agent<br/><small>(Scrapes Maps for Hospitals & Ambulances)</small>"}:::agent
+                    GoogleMaps[("🌐 Google Maps<br/><small>(Live Web Data via Selenium)</small>")]:::db
+                    
+                    ChatNode["💬 Post-Diagnosis Chat Node<br/><small>(Handles follow-up questions)</small>"]:::synthesis
+                end
+            end
+            
+            %% External Outputs
+            RemedyOutput(["🌿 Remedy Output<br/><small>(Ayurvedic Herbs & Home Treatments)</small>"]):::output
+            ChatOutput(["🗣️ Chat Output<br/><small>(Conversational Medical Advice)</small>"]):::output
+            FacilitiesOutput(["🏥 Facilities Output<br/><small>(Top 5 Nearby Hospitals & Ambulances)</small>"]):::output
+            
+            %% ----- Connections & Flow -----
+            
+            PatientInput --> RoutingAgent
+            RoutingAgent -- "Step 1: Extract Symptoms" --> MedRAG
+            
+            %% Diagnostic Flow
+            MedRAG -. "Semantic Search" .-> ClinicalDB
+            ClinicalDB -. "Top Matches" .-> MedRAG
+            MedRAG --> ContextDistiller
+            ContextDistiller --> ConditionSynthesis
+            ConditionSynthesis --> DiagnosisOutput
+            
+            %% Branching to Action Agents
+            DiagnosisOutput -- "Step 2: Identified Disease" --> RemedyAgent
+            DiagnosisOutput -- "Step 3: Location Context" --> FacilitiesAgent
+            
+            %% Remedy Agent Operations
+            RemedyAgent -. "Query by Disease" .-> RemedyDB
+            RemedyDB -. "Targeted Remedies" .-> RemedyAgent
+            RemedyAgent --> RemedyOutput
+            RemedyAgent --> ChatNode
+            
+            %% Facilities Agent Operations
+            FacilitiesAgent -. "Headless Browsing" .-> GoogleMaps
+            GoogleMaps -. "Top-Rated Contacts" .-> FacilitiesAgent
+            FacilitiesAgent --> FacilitiesOutput
+            
+            %% Final Chat Flow
+            ChatNode --> ChatOutput
+            
+            %% Layout Hints (Forces Left-to-Right spacing to prevent crossed lines)
+            RemedyAgent ~~~ FacilitiesAgent
+            RemedyOutput ~~~ ChatOutput
+            ChatOutput ~~~ FacilitiesOutput
+            
+            class CoreAIEngine,DiagnosticPipeline,ActionPipeline subgraphStyle;
+        </div>
+    </div>
+
+    <!-- Include Mermaid.js library -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'base', themeVariables: {
+            fontFamily: 'Inter'
+        }});
+    </script>
+</body>
+</html>

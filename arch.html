@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blu-Care Architectural Diagram</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+    </script>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+        }
+        .mermaid {
+            display: flex;
+            justify-content: center;
+            background: #1e293b;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+            overflow-x: auto;
+        }
+        .card {
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="antialiased min-h-screen pb-20">
+    
+    <!-- Header -->
+    <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <h1 class="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-400">
+                Blu-Care: Multi-Agent Medical Triage Architecture
+            </h1>
+            <p class="mt-2 text-slate-400 text-sm">Comprehensive End-to-End System Design for Technical Interviews</p>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Mermaid Diagram -->
+        <section class="mb-16">
+            <div class="flex items-center justify-between mb-6">
+                <h2 class="text-2xl font-semibold text-white">System Architecture Flowchart</h2>
+                <span class="badge bg-blue-500/20 text-blue-400 border border-blue-500/30">Mermaid JS</span>
+            </div>
+            
+            <div class="mermaid">
+flowchart TD
+    %% Styling
+    classDef user fill:#3b82f6,stroke:#2563eb,stroke-width:2px,color:white,font-weight:bold,rx:10px,ry:10px;
+    classDef frontend fill:#0f766e,stroke:#0d9488,stroke-width:2px,color:white,rx:5px,ry:5px;
+    classDef api fill:#4f46e5,stroke:#4338ca,stroke-width:2px,color:white,rx:5px,ry:5px;
+    classDef agent fill:#7c3aed,stroke:#6d28d9,stroke-width:2px,color:white,font-weight:bold,rx:8px,ry:8px;
+    classDef rag fill:#db2777,stroke:#be185d,stroke-width:2px,color:white,rx:8px,ry:8px;
+    classDef db fill:#ea580c,stroke:#c2410c,stroke-width:2px,color:white,rx:5px,ry:5px;
+    classDef tool fill:#ca8a04,stroke:#a16207,stroke-width:2px,color:white,rx:8px,ry:8px;
+    classDef subgraphStyle fill:#1e293b,stroke:#334155,stroke-width:2px,stroke-dasharray: 5 5;
+
+    User(["🧑🏽‍⚕️ Patient (Browser/Mobile)"]):::user
+
+    subgraph FrontendLayer ["1. Frontend (Vanilla JS)"]
+        UI["Chat UI<br/>(Captures Location, Markdown Rendering)"]:::frontend
+    end
+
+    subgraph APILayer ["2. API & State (FastAPI + SQLite)"]
+        API["REST API (/session/message)"]:::api
+        State["Session Service & Checkpointer"]:::api
+    end
+
+    subgraph LangGraphLayer ["3. LangGraph Orchestration (State Machine)"]
+        direction TB
+        CentralAgent{"🤖 Central Agent<br/>(LLaMA 3.1 70B - Decision Router)"}:::agent
+        
+        RAGNode["🔍 Advanced RAG<br/>(Self-Query Filter)"]:::rag
+        DistillationNode["⚙️ Distillation<br/>(LLaMA 3.1 8B - Noise Removal)"]:::rag
+        SynthesisNode["🩺 Condition Synthesis<br/>(Diagnosis & MD Output)"]:::agent
+        
+        RemedyNode["🌿 Remedy Agent<br/>(Ayurvedic & OTC)"]:::agent
+        FacilitiesNode["🏥 Facilities Tool<br/>(Geolocation routing)"]:::tool
+        ChatNode["💬 Post-Diagnosis Chat<br/>(Follow-up Q&A)"]:::agent
+    end
+
+    subgraph DataLayer ["4. Data & External Tools"]
+        Qdrant[("📚 Qdrant Vector DB<br/>(Clinical & Ayurvedic Data)")]:::db
+        Embeddings["BGE Embeddings &<br/>Cross-Encoder Reranker"]:::rag
+        Selenium["🌐 Selenium Scraper<br/>(Google Maps)"]:::tool
+    end
+
+    %% Connections
+    User <-->|Symptoms, Lat/Lon| UI
+    UI <-->|HTTP POST| API
+    API <--> State
+    State <--> CentralAgent
+
+    CentralAgent -- "call_rag" --> RAGNode
+    CentralAgent -- "call_remedy" --> RemedyNode
+    CentralAgent -- "call_facilities" --> FacilitiesNode
+    CentralAgent -- "post_diagnosis_chat" --> ChatNode
+    CentralAgent -. "ask_question" .-> API
+
+    RAGNode --> DistillationNode --> SynthesisNode
+    SynthesisNode -. "Returns Diagnosis" .-> API
+
+    %% Data Connections
+    RAGNode <--> Embeddings
+    RAGNode <--> Qdrant
+    RemedyNode <--> Qdrant
+    FacilitiesNode <--> Selenium
+
+    RemedyNode -. "Returns Remedies" .-> API
+    FacilitiesNode -. "Returns Top 5 Clinics" .-> API
+    ChatNode -. "Returns Answers" .-> API
+
+    class FrontendLayer,APILayer,LangGraphLayer,DataLayer subgraphStyle;
+            </div>
+        </section>
+
+        <!-- Technical Breakdown -->
+        <section>
+            <h2 class="text-2xl font-semibold text-white mb-8">Technical Component Breakdown</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Frontend -->
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-teal-500/20 rounded-lg">
+                            <svg class="w-6 h-6 text-teal-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-medium text-white">Frontend</h3>
+                    </div>
+                    <ul class="space-y-3 text-slate-300 text-sm">
+                        <li><strong class="text-teal-400">Tech Stack:</strong> HTML5, CSS3, Vanilla JS</li>
+                        <li><strong class="text-teal-400">State Management:</strong> Maintains unique session ID for stateful chats.</li>
+                        <li><strong class="text-teal-400">Geolocation:</strong> Captures user's Latitude & Longitude on load and appends it as `[SYSTEM CONTEXT]` to messages.</li>
+                        <li><strong class="text-teal-400">Dynamic UI:</strong> Parses Markdown from the backend, including actionable buttons (e.g., `[ACTION:Find nearby hospitals...]`).</li>
+                    </ul>
+                </div>
+
+                <!-- API & Persistence -->
+                <div class="card">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-indigo-500/20 rounded-lg">
+                            <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-medium text-white">API & State Persistence</h3>
+                    </div>
+                    <ul class="space-y-3 text-slate-300 text-sm">
+                        <li><strong class="text-indigo-400">Tech Stack:</strong> FastAPI, Uvicorn, SQLite</li>
+                        <li><strong class="text-indigo-400">Lifespan Hooks:</strong> Warms up Qdrant client, HF Embeddings, and Cross-Encoder at startup to prevent cold-start latency.</li>
+                        <li><strong class="text-indigo-400">Checkpointer:</strong> Utilizes LangGraph `SqliteSaver` (with Redis fallback) to persist the `TriageState` seamlessly across HTTP requests.</li>
+                    </ul>
+                </div>
+
+                <!-- LangGraph Orchestration -->
+                <div class="card md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-purple-500/20 rounded-lg">
+                            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 002-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-medium text-white">LangGraph Multi-Agent Workflows</h3>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-6">
+                        <div>
+                            <h4 class="text-purple-300 font-semibold mb-2">1. Central Agent (The Router)</h4>
+                            <p class="text-slate-400 text-sm mb-3">Uses a LLaMA 3.1 70B model with strict structured output. Forces 3-5 clarifying turns to gather symptoms before routing. Employs a rolling summary (via 8B model) to manage context limits. Routes to RAG, Synthesis, Remedy, or Facilities based on intent.</p>
+                            
+                            <h4 class="text-purple-300 font-semibold mb-2">2. Distillation & Synthesis</h4>
+                            <p class="text-slate-400 text-sm">
+                                <strong>Distillation:</strong> Uses a fast LLaMA 8B model to strip medical noise from RAG chunks, saving massive tokens.<br/>
+                                <strong>Synthesis:</strong> Diagnoses the condition, lists alternative causes, and generates Markdown with action buttons.
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-purple-300 font-semibold mb-2">3. Remedy Agent</h4>
+                            <p class="text-slate-400 text-sm mb-3">If requested post-diagnosis, retrieves targeted Ayurvedic herbs and OTC options from Qdrant, strictly formatting reasons why they help and listing red flags.</p>
+                            
+                            <h4 class="text-purple-300 font-semibold mb-2">4. Facilities Agent</h4>
+                            <p class="text-slate-400 text-sm">Triggers a tool-calling LLM to execute a Selenium web scraper. It passes the user's GPS coords to Google Maps, extracts top 5 hospitals/ambulances, and returns formatted links.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RAG Pipeline -->
+                <div class="card md:col-span-2">
+                    <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-pink-500/20 rounded-lg">
+                            <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        </div>
+                        <h3 class="text-xl font-medium text-white">Advanced RAG Pipeline</h3>
+                    </div>
+                    <ol class="list-decimal list-inside space-y-3 text-slate-300 text-sm ml-2">
+                        <li><strong class="text-pink-400">Self-Query Constructor:</strong> LLM translates natural language into Qdrant metadata filters (e.g. detecting "Ayurvedic intent").</li>
+                        <li><strong class="text-pink-400">Dense Retrieval:</strong> BGE embeddings search Qdrant with a strict score threshold to prevent hallucinated matches.</li>
+                        <li><strong class="text-pink-400">MMR (Maximal Marginal Relevance):</strong> Diversifies the candidate pool so chunks aren't perfectly redundant.</li>
+                        <li><strong class="text-pink-400">Cross-Encoder Reranking:</strong> Uses `sentence_transformers` to score the Query-Document pairs, ensuring ultimate precision before passing context to the LLM.</li>
+                    </ol>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-slate-900 border-t border-slate-800 text-center py-6 text-slate-500 text-sm">
+        Generated for Interview Presentation - Blu-Care Multi-Agent RAG System
+    </footer>
+
+</body>
+</html>

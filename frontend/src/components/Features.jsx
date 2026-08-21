@@ -36,8 +36,8 @@ const Cocktails = () => {
 	return (
 		<section ref={containerRef} id="cocktails" className="relative overflow-hidden bg-surface py-20">
 			<div className="noisy absolute inset-0 z-0 pointer-events-none"></div>
-			<img src="/images/cocktail-left-leaf.png" alt="l-leaf" id="c-left-leaf" className="opacity-20" />
-			<img src="/images/cocktail-right-leaf.png" alt="r-leaf" id="c-right-leaf" className="opacity-20" />
+			<img src="/images/cocktail-left-leaf.png" alt="l-leaf" id="c-left-leaf" className="opacity-20 z-0 pointer-events-none" />
+			<img src="/images/cocktail-right-leaf.png" alt="r-leaf" id="c-right-leaf" className="opacity-20 z-0 pointer-events-none" />
 
 			<div className="list container mx-auto relative z-10 px-5">
 				<div className="popular">

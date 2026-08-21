@@ -134,12 +134,12 @@ const Hero = () => {
 				<img
 					src="/images/cocktail-left-leaf.png"
 					alt="left-leaf"
-					className="left-leaf opacity-40"
+					className="left-leaf opacity-40 z-0 pointer-events-none"
 				/>
 				<img
 					src="/images/hero-right-leaf.png"
 					alt="right-leaf"
-					className="right-leaf opacity-40"
+					className="right-leaf opacity-40 z-0 pointer-events-none"
 				/>
 
 				<div className="body relative md:absolute w-full px-5 mt-20 md:mt-0 md:bottom-20">

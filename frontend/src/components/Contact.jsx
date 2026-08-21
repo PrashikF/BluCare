@@ -60,8 +60,8 @@ const Contact = () => {
 	return (
 		<footer ref={containerRef} id="contact" className="relative py-24 bg-base border-t border-light overflow-hidden">
 			<div className="noisy absolute inset-0 z-0 pointer-events-none"></div>
-			<img src="/images/footer-left-leaf.png" alt="leaf-left" id="f-left-leaf" className="opacity-10 absolute -left-20 bottom-0 pointer-events-none" />
-			<img src="/images/footer-right-leaf.png" alt="leaf-right" id="f-right-leaf" className="opacity-10 absolute -right-20 top-0 pointer-events-none" />
+			<img src="/images/footer-left-leaf.png" alt="leaf-left" id="f-left-leaf" className="opacity-10 absolute -left-20 bottom-0 z-0 pointer-events-none" />
+			<img src="/images/footer-right-leaf.png" alt="leaf-right" id="f-right-leaf" className="opacity-10 absolute -right-20 top-0 z-0 pointer-events-none" />
 
 			<div className="content container mx-auto px-5 text-center relative z-10">
 				<p className="text-secondary uppercase tracking-[0.3em] font-medium text-xs mb-8">Get In Touch</p>

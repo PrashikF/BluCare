@@ -1,49 +1,383 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
-    <link rel="manifest" href="/manifest.json" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0d0f12" />
-
-    <!-- SEO Meta Tags -->
-    <title>BluCare+ | AI Healthcare Assistant & Emergency Ambulance Dispatch</title>
-    <meta
-      name="description"
-      content="BluCare+ is an AI-powered healthcare assistant providing intelligent diagnostic evaluation, medical RAG, symptom analysis, and instant 24/7 ambulance emergency dispatch."
-    />
-    <meta name="keywords" content="BluCare, AI Healthcare, Medical Assistant, Ambulance Assistance, Emergency Dispatch, RAG Diagnostics" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://blucare.ai/" />
-    <meta property="og:title" content="BluCare+ | AI Healthcare Assistant & Emergency Ambulance Dispatch" />
-    <meta
-      property="og:description"
-      content="BluCare+ harmonizes medical precision with empathetic understanding, providing a safe and intelligent workspace for your health journey."
-    />
-    <meta property="og:image" content="/images/abt1.webp" />
-
-    <!-- Twitter Cards -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="https://blucare.ai/" />
-    <meta name="twitter:title" content="BluCare+ | AI Healthcare Assistant" />
-    <meta
-      name="twitter:description"
-      content="Advanced Diagnostics. Gentle Human Care. Powered by Clinical AI Intelligence."
-    />
-    <meta name="twitter:image" content="/images/abt1.webp" />
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BluCare+</title>
+    
     <!-- Prevent Flash of Unstyled Theme -->
     <script>
-      const THEME_KEY = 'blucare_theme';
-      const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
-      document.documentElement.setAttribute('data-theme', savedTheme);
+        const THEME_KEY = 'blucare_theme';
+        const savedTheme = localStorage.getItem(THEME_KEY) || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
     </script>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Standard Dark Theme (Default) */
+            --bg-base: #0F0F12;
+            --bg-surface: #15151A;
+            --bg-card: #1B1B22;
+            --accent-sage: #7FE1C3;
+            --accent-lavender: #B6C4FF;
+            --accent-aqua: #A3E8ED;
+            --text-primary: #ECECF1;
+            --text-secondary: #B8BAC7;
+            --text-subdued: #8A8D9E;
+            --status-normal: #8FE3B0;
+            --shadow-base: 0 12px 40px rgba(0, 0, 0, 0.4);
+
+            /* Component Backgrounds & Borders */
+            --nav-bg: rgba(15, 15, 18, 0.8);
+            --border-light: rgba(255, 255, 255, 0.05);
+            --border-focus: rgba(182, 196, 255, 0.3);
+            --ai-bubble-bg: rgba(127, 225, 195, 0.06);
+            --ai-bubble-border: rgba(127, 225, 195, 0.12);
+
+            /* Glows & Hover States */
+            --glow-sage: rgba(127, 225, 195, 0.25);
+            --glow-lavender: rgba(182, 196, 255, 0.25);
+        }
+
+        [data-theme="light"] {
+            /* Crisp Light Theme */
+            --bg-base: #F8FAFC;
+            --bg-surface: #F1F5F9;
+            --bg-card: #FFFFFF;
+            --accent-sage: #14B8A6;
+            --accent-lavender: #6366F1;
+            --accent-aqua: #06B6D4;
+            --text-primary: #0F172A;
+            --text-secondary: #334155;
+            --text-subdued: #64748B;
+            --status-normal: #10B981;
+            --shadow-base: 0 12px 40px rgba(0, 0, 0, 0.05);
+
+            /* Component Backgrounds & Borders */
+            --nav-bg: rgba(248, 250, 252, 0.85);
+            --border-light: rgba(15, 23, 42, 0.08);
+            --border-focus: rgba(99, 102, 241, 0.3);
+            --ai-bubble-bg: rgba(20, 184, 166, 0.08);
+            --ai-bubble-border: rgba(20, 184, 166, 0.2);
+
+            /* Glows & Hover States */
+            --glow-sage: rgba(20, 184, 166, 0.25);
+            --glow-lavender: rgba(99, 102, 241, 0.25);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg-base);
+            color: var(--text-primary);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* --- Ambient Background Glow --- */
+        .ambient-background {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80vw;
+            height: 80vh;
+            background: linear-gradient(120deg, var(--accent-sage), var(--accent-lavender), var(--accent-aqua), var(--accent-sage));
+            background-size: 300% 300%;
+            filter: blur(140px);
+            opacity: 0.12;
+            z-index: -1;
+            animation: breathe 12s ease-in-out infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }[data-theme="light"] .ambient-background {
+            opacity: 0.15;
+            filter: blur(120px);
+        }
+
+        @keyframes breathe {
+            0% { background-position: 0% 50%; transform: translate(-50%, -48%) scale(0.95); }
+            100% { background-position: 100% 50%; transform: translate(-50%, -52%) scale(1.05); }
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; height: 80px; padding: 0 40px;
+            display: flex; align-items: center; justify-content: space-between;
+            z-index: 100; background: transparent; 
+        }
+
+        .brand {
+            font-weight: 500; font-size: 1.1rem; letter-spacing: -0.01em;
+            color: var(--text-primary); display: flex; align-items: center; gap: 12px;
+            text-decoration: none;
+        }
+
+        .brand-dot {
+            width: 8px; height: 8px; background: var(--accent-sage); border-radius: 50%;
+            box-shadow: 0 0 15px var(--glow-sage);
+        }
+
+        .nav-right { display: flex; align-items: center; }
+        
+        .nav-links { display: flex; align-items: center; gap: 32px; }
+        .nav-links a {
+            color: var(--text-subdued); text-decoration: none; font-size: 0.9rem;
+            transition: color 0.3s ease; cursor: pointer;
+        }
+        .nav-links a:hover { color: var(--accent-lavender); }
+
+        .theme-toggle {
+            background: transparent; border: none; color: var(--text-subdued);
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: color 0.3s ease; margin-left: 8px;
+        }
+        .theme-toggle:hover { color: var(--accent-lavender); }
+        .theme-toggle svg { width: 18px; height: 18px; }
+
+        /* --- NEW: User Profile Element --- */
+        .user-profile {
+            display: flex; align-items: center; gap: 12px; padding-left: 24px;
+            margin-left: 24px; border-left: 1px solid var(--border-light);
+            cursor: pointer; transition: opacity 0.3s ease;
+        }
+
+        .user-profile:hover .user-avatar {
+            border-color: var(--border-focus);
+            color: var(--accent-lavender);
+        }
+
+        .user-avatar {
+            width: 32px; height: 32px; border-radius: 50%; 
+            background: var(--ai-bubble-bg); color: var(--accent-sage); 
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85rem; font-weight: 500; 
+            border: 1px solid var(--ai-bubble-border); flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Neutral logged-out state */
+        .user-avatar.neutral {
+            background: transparent;
+            color: var(--text-subdued);
+            border-color: var(--border-light);
+        }
+
+        .user-name {
+            font-size: 0.85rem; color: var(--text-secondary); 
+            font-weight: 400; white-space: nowrap;
+        }
+
+        /* --- Main Content Container --- */
+        main {
+            flex-grow: 1; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center; padding: 20px;
+            margin-top: -40px; z-index: 10;
+        }
+
+        .hero-title {
+            font-size: 3rem; font-weight: 300; letter-spacing: -0.02em;
+            color: var(--text-primary); margin-bottom: 24px;
+            opacity: 0; transform: translateY(15px);
+            animation: fadeUp 0.8s ease forwards 0.2s;
+        }
+
+        .hero-description {
+            font-size: 1.15rem; color: var(--text-secondary); font-weight: 300;
+            max-width: 500px; line-height: 1.6; margin-bottom: 48px;
+            opacity: 0; transform: translateY(15px);
+            animation: fadeUp 0.8s ease forwards 0.4s;
+        }
+
+        /* --- Primary CTA --- */
+        .cta-button {
+            background-color: var(--bg-card); color: var(--text-primary);
+            border: 1px solid var(--border-light); padding: 18px 40px; border-radius: 40px;
+            font-size: 1.05rem; font-weight: 400; text-decoration: none;
+            cursor: pointer; box-shadow: var(--shadow-base);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            display: inline-flex; align-items: center; gap: 12px;
+            opacity: 0; transform: translateY(15px);
+            animation: fadeUp 0.8s ease forwards 0.6s;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px); background-color: var(--bg-surface);
+            border-color: var(--accent-sage); box-shadow: 0 12px 40px var(--glow-sage);
+            color: var(--accent-sage);
+        }
+
+        .cta-button svg { transition: transform 0.3s ease; }
+        .cta-button:hover svg { transform: translateX(4px); }
+
+        /* --- Trust & Safety Signals --- */
+        .trust-section {
+            margin-top: 48px; display: flex; flex-direction: column; gap: 12px;
+            opacity: 0; transform: translateY(15px);
+            animation: fadeUp 0.8s ease forwards 0.8s;
+        }
+
+        .trust-text { font-size: 0.85rem; color: var(--text-subdued); font-weight: 300; }
+
+        .voice-hint {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+            font-size: 0.85rem; color: var(--accent-lavender);
+            background: rgba(182, 196, 255, 0.05); padding: 6px 16px; border-radius: 20px;
+            margin-top: 8px;
+        }
+
+        [data-theme="light"] .voice-hint { background: rgba(99, 102, 241, 0.05); }
+
+        /* --- Footer --- */
+        footer {
+            padding: 40px; text-align: center; font-size: 0.75rem;
+            color: var(--text-subdued); font-weight: 300;
+            opacity: 0; animation: fadeIn 1s ease forwards 1.2s;
+        }
+
+        /* --- Animations & Responsiveness --- */
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+
+        @media (max-width: 768px) {
+            nav { padding: 0 20px; }
+            .hero-title { font-size: 2.2rem; }
+            .hero-description { font-size: 1rem; padding: 0 20px; }
+            .nav-links { display: none; }
+            .user-profile { padding-left: 16px; margin-left: 16px; }
+            .user-name { display: none; } /* Show only avatar on mobile */
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Subtle immersive background -->
+    <div class="ambient-background"></div>
+
+    <nav>
+        <div class="brand">
+            <div class="brand-dot"></div>
+            BluCare+
+        </div>
+        <div class="nav-right">
+            <div class="nav-links">
+                <a href="chat.html">Chat</a>
+                <a href="about.html">About</a>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Toggle Theme">
+                    <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></svg>
+                </button>
+            </div>
+            
+            <!-- Dynamic Profile Entry Point -->
+            <div class="user-profile" id="userProfile" onclick="handleProfileClick()" title="Access your space">
+                <!-- Rendered dynamically by JS based on Auth State -->
+            </div>
+        </div>
+    </nav>
+    
+    <main>
+        <!-- 1. Hero Section -->
+        <h1 class="hero-title">Here to listen.<br>Whenever you are ready.</h1>
+        
+        <!-- 3. What This Is -->
+        <p class="hero-description">
+            A private, gentle space to navigate how you're feeling. 
+            Take your time, there is absolutely no rush.
+        </p>
+
+        <!-- 2. Primary CTA -->
+        <a href="chat.html" class="cta-button">
+            Begin gently
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        </a>
+
+        <!-- 4 & 5. Trust & Voice Hint -->
+        <div class="trust-section">
+            <div class="trust-text">Your conversations stay completely private.</div>
+            <div class="voice-hint">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="22"></line>
+                </svg>
+                Type at your pace, or use your voice.
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        Designed for calm, not alarm.
+    </footer>
+
+    <!-- Theme & Auth Logic -->
+    <script>
+        // --- Theme Toggle Logic ---
+        function updateThemeIcon(theme) {
+            const themeIcon = document.getElementById('themeIcon');
+            if (theme === 'light') {
+                themeIcon.innerHTML = `<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>`;
+            } else {
+                themeIcon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>`;
+            }
+        }
+
+        function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem(THEME_KEY, newTheme);
+            updateThemeIcon(newTheme);
+        }
+
+        updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'dark');
+
+        // --- Profile / Auth Logic ---
+        function renderProfile() {
+            const profileEl = document.getElementById('userProfile');
+            // Assuming false for demo unless a user actually logged in via auth.html
+            const isLoggedIn = localStorage.getItem('blucare_logged_in') === 'true';
+
+            if (isLoggedIn) {
+                profileEl.innerHTML = `
+                    <div class="user-avatar">P</div>
+                    <div class="user-name">Hi, Prashik</div>
+                `;
+            } else {
+                profileEl.innerHTML = `
+                    <div class="user-avatar neutral">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                `;
+            }
+        }
+
+        function handleProfileClick() {
+            const isLoggedIn = localStorage.getItem('blucare_logged_in') === 'true';
+            if (!isLoggedIn) {
+                window.location.href = 'auth.html';
+            } else {
+                // Already logged in, navigate straight to chat
+                window.location.href = 'chat.html';
+            }
+        }
+
+        // Initialize Profile on load
+        document.addEventListener('DOMContentLoaded', renderProfile);
+    </script>
+</body>
 </html>

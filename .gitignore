@@ -10,19 +10,27 @@ venv/
 
 # Node
 node_modules/
+**/node_modules/
 frontend/node_modules/
 
 # Build
 frontend/dist/
+**/dist/
 dist/
+
+# Databases & Checkpoints
+*.sqlite
+checkpoints.sqlite
+
+# OS & macOS
+.DS_Store
+Thumbs.db
+__MACOSX/
+**/__MACOSX/
 
 # IDE
 .vscode/
 .idea/
 
-# OS
-.DS_Store
-Thumbs.db
-
 # Logs
-*.logcheckpoints.sqlite
+*.log

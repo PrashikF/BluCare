@@ -1,7 +1,7 @@
 // src/components/Contact.jsx
 import { useRef } from 'react';
 import { useGSAP } from '@gsap/react';
-import { SplitText } from 'gsap/all';
+
 import gsap from 'gsap';
 
 const Contact = () => {
@@ -16,54 +16,44 @@ const Contact = () => {
 
 			const heading = scope.querySelector('#contact h2') || scope.querySelector('h2');
 			if (!heading) return;
-
-			titleSplit = SplitText.create(heading, { type: 'words' });
-
-			if (titleSplit.words) {
-				titleSplit.words.forEach((word) => {
-					if (word.innerText.includes('BluCare+')) {
-						word.classList.add('text-gradient');
-					}
-				});
-			}
-
+			
 			const timeline = gsap.timeline({
 				scrollTrigger: {
 					trigger: scope,
-					start: 'top center',
+					toggleActions: "play none none reverse",
+					start: 'top 85%',
 				},
 				ease: 'power2.out',
 			});
 
-			if (titleSplit.words && titleSplit.words.length > 0) {
-				timeline.from(titleSplit.words, {
-					opacity: 0,
-					yPercent: 100,
-					stagger: 0.05,
-					duration: 1,
-				});
+			if (heading) {
+				timeline.fromTo(heading, 
+					{ opacity: 0, y: 20 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: 1.2,
+						ease: 'expo.out',
+					}
+				);
 			}
 
 			const footerInfo = scope.querySelector('.footer-info');
 			if (footerInfo) {
-				timeline.from(footerInfo, {
-					opacity: 0,
-					y: 20,
-					duration: 1,
-				}, '-=0.5');
+				timeline.fromTo(footerInfo, 
+					{ opacity: 0, y: 20 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: 1,
+					}, '-=0.5'
+				);
 			}
 		};
 
-		if (document.fonts && document.fonts.ready) {
-			document.fonts.ready.then(() => {
-				initAnimations();
-			});
-		} else {
-			initAnimations();
-		}
+		initAnimations();
 
 		return () => {
-			if (titleSplit) titleSplit.revert();
 		};
 	}, { scope: containerRef });
 

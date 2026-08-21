@@ -1,4 +1,8 @@
-import React, { useState, useEffect, useRef } from 'react';
+import os
+
+sidebar_path = '/Users/Abhi/Downloads/BluCare/BluCare/frontend/src/components/navigation/Sidebar.jsx'
+
+sidebar_content = """import React, { useState, useEffect, useRef } from 'react';
 import { NavLink, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { BrandLogo } from '../ui/BrandLogo';
 import { useUser, useClerk } from '@clerk/clerk-react';
@@ -349,3 +353,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 };
 
 export default Sidebar;
+"""
+
+with open(sidebar_path, 'w') as f:
+    f.write(sidebar_content)
+
+print("Rewrote Sidebar.jsx")

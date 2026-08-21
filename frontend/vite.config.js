@@ -7,6 +7,9 @@ import path from 'path'
 export default defineConfig({
   envDir: '../',
   plugins: [react(), tailwindcss()],
+  server: {
+    host: true
+  },
   build: {
     target: 'es2020',
     sourcemap: false,

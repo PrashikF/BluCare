@@ -1,9 +1,9 @@
 # --- LangChain / LangGraph core ---
-langchain==0.3.27
-langchain-core==0.3.79
-langchain-community==0.3.14
-langgraph==0.2.62
-langchain-groq==0.2.1
+langchain
+langchain-core
+langchain-community
+langgraph
+langchain-groq
 
 # --- RAG / vectorstore (Qdrant, not Chroma) ---
 qdrant-client==1.12.1
@@ -12,7 +12,7 @@ langchain-huggingface==0.1.2
 sentence-transformers==3.3.1   # also used for the cross-encoder reranker
 
 # --- LangSmith tracing/eval ---
-langsmith==0.3.45
+langsmith
 
 # --- FastAPI service layer ---
 fastapi==0.115.6

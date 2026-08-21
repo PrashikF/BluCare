@@ -2,6 +2,7 @@
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
 import { SplitText } from "gsap/all";
+
 import { useRef } from "react";
 import { useMediaQuery } from "react-responsive";
 import { Link } from "react-router-dom";
@@ -26,26 +27,32 @@ const Hero = () => {
 
 			if (titleEl) {
 				heroSplit = new SplitText(titleEl, { type: "chars, words" });
-				heroSplit.chars.forEach((char) => char.classList.add("text-gradient"));
-				gsap.from(heroSplit.chars, {
-					yPercent: 100,
-					duration: 1.8,
-					ease: "expo.out",
-					stagger: 0.06,
-				});
+				// Removed per-char text-gradient to allow parent gradient to flow across word
+				gsap.fromTo(heroSplit.chars,
+					{ y: 50, opacity: 0 },
+					{
+						y: 0,
+						opacity: 1,
+						duration: 1.8,
+						ease: "expo.out",
+						stagger: 0.06,
+					}
+				);
 			}
 
 			if (subtitleEl) {
 				paragraphSplit = new SplitText(subtitleEl, { type: "lines" });
-				paragraphSplit.lines.forEach((line) => line.classList.add("text-gradient"));
-				gsap.from(paragraphSplit.lines, {
-					opacity: 0,
-					yPercent: 100,
-					duration: 1.8,
-					ease: "expo.out",
-					stagger: 0.06,
-					delay: 1,
-				});
+				// Removed text-gradient class addition that was causing invisibility
+				gsap.fromTo(paragraphSplit.lines,
+					{ opacity: 0, y: 40 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: 1.8,
+						ease: "expo.out",
+						stagger: 0.1,
+					}
+				);
 			}
 
 			const heroSec = scope.querySelector("#hero");
@@ -89,22 +96,14 @@ const Hero = () => {
 
 			const btn = scope.querySelector(".hero-btn");
 			if (btn) {
-				gsap.from(btn, {
-					y: 20,
-					duration: 1.5,
-					ease: "expo.out",
-					delay: 1.2,
-				});
+				gsap.fromTo(btn,
+					{ opacity: 0, y: 20 },
+					{ opacity: 1, y: 0, duration: 1.5, ease: "power3.out", delay: 0.4 }
+				);
 			}
 		};
 
-		if (document.fonts && document.fonts.ready) {
-			document.fonts.ready.then(() => {
-				initAnimations();
-			});
-		} else {
-			initAnimations();
-		}
+		initAnimations();
 
 		return () => {
 			if (heroSplit) heroSplit.revert();
@@ -150,9 +149,10 @@ const Hero = () => {
 								<p className="text-secondary uppercase tracking-[0.2em] font-medium text-xs">
 									Clinical Intelligence Platform
 								</p>
-								<p className="subtitle font-medium text-xl md:text-2xl">
-									Advanced Diagnostics <br className="hidden md:block" /> Gentle Human Care
-								</p>
+								<div className="subtitle font-medium text-xl md:text-2xl">
+									<div className="text-sage">Advanced Diagnostics</div>
+									<div className="text-aqua/90">Gentle Human Care</div>
+								</div>
 							</div>
 
 							<div className="view-cocktails lg:max-w-xs text-center lg:text-left">
@@ -171,14 +171,6 @@ const Hero = () => {
 					</div>
 				</div>
 			</section>
-
-			<div className="video absolute inset-0 pointer-events-none opacity-30 flex items-center justify-center">
-				<img
-					src="/images/under-img.jpg"
-					alt="Background"
-					className="object-cover w-full h-full"
-				/>
-			</div>
 		</div>
 	);
 };

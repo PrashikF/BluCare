@@ -1,6 +1,7 @@
 // src/pages/SignInPage.jsx - Custom Glassmorphic Sign In Page
 import React from 'react';
 import { SignIn } from '@clerk/clerk-react';
+import { BrandLogo } from '../components/ui/BrandLogo';
 import { NavLink } from 'react-router-dom';
 import { ShieldCheck, Sparkles } from 'lucide-react';
 
@@ -16,9 +17,7 @@ const SignInPage = () => {
         {/* Brand Header */}
         <div className="text-center space-y-2">
           <NavLink to="/" className="inline-flex items-center gap-2.5 no-underline group mb-2">
-            <div className="w-10 h-10 rounded-2xl bg-sage/15 border border-sage/30 text-sage flex items-center justify-center font-bold text-sm aspect-square shrink-0 shadow-[0_0_15px_var(--glow-sage)] group-hover:-translate-y-0.5 transition-all">
-              <div className="brand-dot shrink-0" />
-            </div>
+            <div className="brand-dot shrink-0" />
             <span className="text-primary font-bold text-2xl tracking-tight">
               BluCare<span className="text-sage">+</span>
             </span>

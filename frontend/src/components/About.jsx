@@ -1,7 +1,7 @@
 // src/components/About.jsx
 import { useRef } from 'react';
 import gsap from 'gsap';
-import { SplitText } from 'gsap/all';
+
 import { useGSAP } from '@gsap/react';
 
 const About = () => {
@@ -17,48 +17,44 @@ const About = () => {
 			const heading = scope.querySelector('#about h2') || scope.querySelector('h2');
 			if (!heading) return;
 
-			titleSplit = SplitText.create(heading, {
-				type: 'words',
-			});
-
 			const scrollTimeline = gsap.timeline({
 				scrollTrigger: {
 					trigger: scope,
-					start: 'top center',
+					toggleActions: "play none none reverse",
+					start: 'top 85%',
 				},
 			});
 
-			if (titleSplit.words && titleSplit.words.length > 0) {
-				scrollTimeline.from(titleSplit.words, {
-					opacity: 0,
-					duration: 1,
-					yPercent: 100,
-					ease: 'expo.out',
-					stagger: 0.02,
-				});
+			if (heading) {
+				scrollTimeline.fromTo(heading, 
+					{ opacity: 0, y: 20 },
+					{
+						opacity: 1,
+						duration: 1,
+						y: 0,
+						ease: 'expo.out',
+					}
+				);
 			}
 
 			const gridItems = scope.querySelectorAll('.top-grid div, .bottom-grid div');
 			if (gridItems && gridItems.length > 0) {
-				scrollTimeline.from(gridItems, {
-					opacity: 0,
-					duration: 1,
-					ease: 'power2.out',
-					stagger: 0.1,
-				}, '-=0.5');
+				scrollTimeline.fromTo(gridItems, 
+					{ opacity: 0, y: 20 },
+					{
+						opacity: 1,
+						y: 0,
+						duration: 0.8,
+						stagger: 0.1,
+						ease: 'power2.out',
+					}, '-=0.5'
+				);
 			}
 		};
 
-		if (document.fonts && document.fonts.ready) {
-			document.fonts.ready.then(() => {
-				initAnimations();
-			});
-		} else {
-			initAnimations();
-		}
+		initAnimations();
 
 		return () => {
-			if (titleSplit) titleSplit.revert();
 		};
 	}, { scope: containerRef });
 

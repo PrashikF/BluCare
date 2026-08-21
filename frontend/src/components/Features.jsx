@@ -25,10 +25,10 @@ const Cocktails = () => {
 			});
 
 			if (leftLeaf) {
-				parallaxTimeline.from(leftLeaf, { x: -100, y: 100, opacity: 0 }, 0);
+				parallaxTimeline.fromTo(leftLeaf, { x: -100, y: 100, opacity: 0 }, { x: 0, y: 0, opacity: 0.2, ease: 'none' }, 0);
 			}
 			if (rightLeaf) {
-				parallaxTimeline.from(rightLeaf, { x: 100, y: 100, opacity: 0 }, 0);
+				parallaxTimeline.fromTo(rightLeaf, { x: 100, y: 100, opacity: 0 }, { x: 0, y: 0, opacity: 0.2, ease: 'none' }, 0);
 			}
 		}
 	}, { scope: containerRef });

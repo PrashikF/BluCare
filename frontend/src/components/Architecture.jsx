@@ -21,10 +21,10 @@ const Menu = () => {
 			gsap.fromTo(titleEl, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 1, ease: 'power2.out' });
 		}
 		if (detailsH2) {
-			gsap.fromTo(detailsH2, { yPercent: 100, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, ease: 'power2.out' });
+			gsap.fromTo(detailsH2, { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power2.out' });
 		}
 		if (detailsP) {
-			gsap.fromTo(detailsP, { yPercent: 50, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 1, ease: 'power2.out', delay: 0.2 });
+			gsap.fromTo(detailsP, { y: 20, opacity: 0 }, { y: 0, opacity: 1, duration: 1, ease: 'power2.out', delay: 0.2 });
 		}
 	}, { scope: containerRef, dependencies: [currentIndex] });
 
@@ -54,11 +54,10 @@ const Menu = () => {
 						return (
 							<button
 								key={feat.id}
-								className={`px-4 md:px-6 py-2 rounded-full border transition-all duration-300 cursor-pointer whitespace-nowrap ${
-									isActive
+								className={`px-4 md:px-6 py-2 rounded-full border transition-all duration-300 cursor-pointer whitespace-nowrap ${isActive
 										? 'bg-sage border-sage text-bg-base font-medium shadow-[0_0_20px_var(--glow-sage)]'
 										: 'border-light text-subdued hover:text-secondary hover:border-secondary'
-								}`}
+									}`}
 								onClick={() => goToSlide(index)}
 							>
 								{feat.name}

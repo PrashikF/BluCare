@@ -1,6 +1,7 @@
 // src/components/Navbar.jsx
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { BrandLogo } from './ui/BrandLogo';
 import { useAuth, useUser } from '@clerk/clerk-react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -57,15 +58,7 @@ const Navbar = () => {
       <nav className="fixed z-50 w-full transition-all duration-300 h-20 px-5 md:px-10 flex items-center justify-between">
         <div className="flex items-center justify-between w-full">
           {/* Logo brand link pointing to Landing Page / */}
-          <Link
-            to="/"
-            className="flex items-center gap-3 no-underline text-primary font-medium text-[1.1rem] tracking-[-0.01em] shrink-0 group"
-          >
-            <div className="w-7 h-7 rounded-xl bg-sage/15 border border-sage/30 text-sage flex items-center justify-center font-bold text-xs shrink-0 shadow-[0_0_10px_var(--glow-sage)] group-hover:scale-105 transition-transform">
-              <div className="brand-dot shrink-0" />
-            </div>
-            <span>BluCare+</span>
-          </Link>
+          <BrandLogo showDot={true} textSize="text-3xl md:text-4xl" />
 
           <div className="flex items-center gap-4 lg:gap-8">
             <div className="nav-links flex items-center gap-6">

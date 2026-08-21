@@ -1,7 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import os
+
+sidebar_path = '/Users/Abhi/Downloads/BluCare/BluCare/frontend/src/components/navigation/Sidebar.jsx'
+
+sidebar_content = """import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useParams, useLocation } from 'react-router-dom';
 import { BrandLogo } from '../ui/BrandLogo';
-import { useUser, useClerk } from '@clerk/clerk-react';
+import { useUser } from '@clerk/clerk-react';
 import {
   Plus,
   MessageSquare,
@@ -13,18 +17,14 @@ import {
   ChevronRight,
   ShieldCheck,
   Sparkles,
-  Menu,
-  ChevronDown,
-  User,
-  Settings,
-  HelpCircle,
-  LogOut
+  Menu
 } from 'lucide-react';
 import {
   getSessions,
   createSession,
   renameSession,
   deleteSession,
+  groupSessionsByDate,
   setActiveSessionId,
 } from '../../utils/chatStorage';
 import { useToast } from '../../contexts/ToastContext';
@@ -35,18 +35,10 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   const { sessionId } = useParams();
   const { addToast } = useToast();
   const { user } = useUser();
-  const { signOut } = useClerk();
 
   const [sessions, setSessions] = useState([]);
   const [editingId, setEditingId] = useState(null);
   const [editingTitle, setEditingTitle] = useState('');
-  
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  const displayName = user?.fullName || user?.firstName || 'Patient';
-  const displayEmail = user?.primaryEmailAddress?.emailAddress || '';
-  const avatarUrl = user?.imageUrl;
 
   const loadSessions = () => {
     const list = getSessions();
@@ -56,21 +48,11 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
   useEffect(() => {
     loadSessions();
 
+    // Listen for custom storage update events
     const handleStorageChange = () => loadSessions();
     window.addEventListener('blucare_sessions_updated', handleStorageChange);
     return () => window.removeEventListener('blucare_sessions_updated', handleStorageChange);
   }, [location.pathname]);
-
-  // Close dropdown on click outside
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setIsMenuOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   const handleCreateNewChat = () => {
     const newSess = createSession('New Health Consultation');
@@ -118,11 +100,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
     }
   };
 
-  const handleSignOut = async () => {
-    setIsMenuOpen(false);
-    addToast('Signing out of BluCare+...', 'info');
-    await signOut(() => navigate('/'));
-  };
+  const grouped = groupSessionsByDate(sessions);
 
   const renderSessionItem = (sess) => {
     const isActive = location.pathname === `/app/chat/${sess.id}` || location.pathname === `/chat/${sess.id}`;
@@ -130,7 +108,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 
     if (isEditing) {
       return (
-        <div key={sess.id} className="flex items-center gap-1.5 px-3 h-10 mx-4 rounded-xl bg-bg-card/90 border border-sage/40">
+        <div key={sess.id} className="flex items-center gap-1.5 px-3 py-2 mx-2 rounded-xl bg-bg-card/90 border border-sage/40">
           <input
             type="text"
             autoFocus
@@ -165,7 +143,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
         <NavLink
           to={`/app/chat/${sess.id}`}
           onClick={() => setActiveSessionId(sess.id)}
-          title={sess.title}
+          title={isCollapsed ? sess.title : undefined}
           className={`group flex items-center h-10 w-full rounded-full transition-all no-underline overflow-hidden ${
             isActive
               ? 'bg-sage/15 text-sage'
@@ -177,7 +155,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             <MessageSquare size={18} className={`${isActive ? 'text-sage' : 'text-subdued group-hover:text-primary'}`} />
           </div>
           
-          <div className="flex items-center justify-between flex-1 min-w-0 pr-3 opacity-100">
+          <div className={`flex items-center justify-between flex-1 min-w-0 pr-3 transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
             <span className={`truncate text-[13px] ${isActive ? 'font-semibold' : 'font-medium'}`}>{sess.title}</span>
             
             <div className="flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity shrink-0 ml-2">
@@ -229,7 +207,7 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
             </div>
 
             <div className={`ml-3 transition-opacity duration-300 flex items-center gap-2 ${isCollapsed ? 'opacity-0 w-0' : 'opacity-100'}`}>
-              <BrandLogo collapsed={false} showDot={true} dotId="chatBrandDot" />
+              <BrandLogo collapsed={false} showDot={true} dotId="chatBrandDot" noLink />
             </div>
           </div>
 
@@ -237,23 +215,61 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           <div className="px-4 py-2 shrink-0">
             <button
               onClick={handleCreateNewChat}
-              className={`flex items-center h-10 rounded-full bg-sage hover:bg-sage/90 text-bg-base transition-[width,background-color] duration-300 ease-in-out overflow-hidden cursor-pointer shadow-sm ${isCollapsed ? 'w-10' : 'w-full'}`}
+              className={`flex items-center h-12 rounded-[24px] bg-bg-surface hover:bg-bg-card transition-[width,background-color] duration-300 ease-in-out overflow-hidden cursor-pointer shadow-sm border border-light/50 ${isCollapsed ? 'w-10 rounded-full' : 'w-full'}`}
               title="New Chat"
             >
-              <div className="w-10 h-10 shrink-0 flex items-center justify-center text-bg-base">
-                <Plus size={18} />
+              <div className="w-10 h-12 shrink-0 flex items-center justify-center text-subdued group-hover:text-primary">
+                <Plus size={20} />
               </div>
-              <span className={`whitespace-nowrap text-[13px] font-semibold text-bg-base transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'} pr-4`}>
+              <span className={`whitespace-nowrap text-[13px] font-semibold text-primary transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'} pr-4`}>
                 New chat
               </span>
             </button>
           </div>
 
-          {/* Clean Flat Chat History List (Hidden completely when collapsed) */}
-          <div className={`flex-1 overflow-y-auto py-2 space-y-1 scrollbar-thin transition-opacity duration-300 ${isCollapsed ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}>
-            {sessions.map(renderSessionItem)}
+          {/* Chronological Chat History List */}
+          <div className="flex-1 overflow-y-auto py-2 space-y-1 scrollbar-thin">
+            {/* Today */}
+            {grouped.today.length > 0 && (
+              <div className="space-y-1 mt-2">
+                <div className={`px-4 h-6 flex items-end mb-2 transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                  <p className="px-3 text-[11px] font-medium text-subdued">Today</p>
+                </div>
+                {grouped.today.map(renderSessionItem)}
+              </div>
+            )}
 
-            {sessions.length === 0 && (
+            {/* Yesterday */}
+            {grouped.yesterday.length > 0 && (
+              <div className="space-y-1 mt-4">
+                <div className={`px-4 h-6 flex items-end mb-2 transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                  <p className="px-3 text-[11px] font-medium text-subdued">Yesterday</p>
+                </div>
+                {grouped.yesterday.map(renderSessionItem)}
+              </div>
+            )}
+
+            {/* Previous 7 Days */}
+            {grouped.last7Days.length > 0 && (
+              <div className="space-y-1 mt-4">
+                <div className={`px-4 h-6 flex items-end mb-2 transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                  <p className="px-3 text-[11px] font-medium text-subdued">Previous 7 Days</p>
+                </div>
+                {grouped.last7Days.map(renderSessionItem)}
+              </div>
+            )}
+
+            {/* Older */}
+            {grouped.older.length > 0 && (
+              <div className="space-y-1 mt-4">
+                <div className={`px-4 h-6 flex items-end mb-2 transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+                  <p className="px-3 text-[11px] font-medium text-subdued">Older</p>
+                </div>
+                {grouped.older.map(renderSessionItem)}
+              </div>
+            )}
+
+            {sessions.length === 0 && !isCollapsed && (
               <div className="py-8 text-center text-subdued space-y-2">
                 <Sparkles size={20} className="mx-auto text-subdued/50" />
                 <p className="text-[13px]">No previous chats</p>
@@ -262,86 +278,29 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
           </div>
         </div>
 
-        {/* Footer Profile & Status (Dropdown logic imported from TopHeader) */}
-        <div className="px-4 py-4 shrink-0 border-t border-transparent relative" ref={dropdownRef}>
-          <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`flex items-center h-10 rounded-full transition-[width,background-color] duration-300 ease-in-out overflow-hidden cursor-pointer hover:bg-bg-card/60 w-full group ${isCollapsed ? 'w-10' : 'w-full'}`}
-          >
+        {/* Footer Profile & Status */}
+        <div className="px-4 py-4 shrink-0 border-t border-transparent">
+          <div className="flex items-center h-10 w-full overflow-hidden">
             <div className="w-10 h-10 shrink-0 flex items-center justify-center">
-              {avatarUrl ? (
+              {user?.imageUrl ? (
                 <img
-                  src={avatarUrl}
-                  alt={displayName}
+                  src={user.imageUrl}
+                  alt={user?.fullName || 'User'}
                   className="w-8 h-8 rounded-full border border-sage/20 object-cover shrink-0"
                 />
               ) : (
                 <div className="w-8 h-8 rounded-full bg-sage/15 border border-sage/20 text-sage flex items-center justify-center font-semibold text-xs shrink-0">
-                  {displayName.charAt(0)}
+                  {(user?.fullName || user?.firstName || 'P').charAt(0)}
                 </div>
               )}
             </div>
             
-            <div className={`ml-2 flex flex-1 items-center justify-between min-w-0 pr-3 transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`ml-2 flex flex-col justify-center overflow-hidden transition-opacity duration-300 ${isCollapsed ? 'opacity-0' : 'opacity-100'}`}>
               <span className="text-[13px] font-medium text-primary truncate">
-                {displayName}
+                {user?.firstName || user?.fullName || 'Authenticated User'}
               </span>
-              <ChevronDown size={14} className="text-subdued group-hover:text-primary transition-colors shrink-0 ml-1" />
             </div>
-          </button>
-
-          {/* Dropdown Menu Container */}
-          {isMenuOpen && !isCollapsed && (
-            <div className="absolute left-4 bottom-14 w-60 bg-bg-card/95 border border-light rounded-2xl shadow-modal backdrop-blur-2xl p-2 z-50 animate-fade-in space-y-1">
-              <div className="px-3 py-2 border-b border-light mb-1">
-                <p className="text-xs font-semibold text-primary truncate">{displayName}</p>
-                <p className="text-[10px] text-subdued font-mono truncate">{displayEmail}</p>
-              </div>
-
-              <button
-                onClick={() => {
-                  navigate('/app/profile');
-                  setIsMenuOpen(false);
-                }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-secondary hover:text-primary hover:bg-sage/10 transition-colors cursor-pointer text-left"
-              >
-                <User size={15} className="text-sage" />
-                <span>Patient Profile</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  navigate('/app/settings');
-                  setIsMenuOpen(false);
-                }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-secondary hover:text-primary hover:bg-sage/10 transition-colors cursor-pointer text-left"
-              >
-                <Settings size={15} className="text-lavender" />
-                <span>Care Settings</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  navigate('/app/help');
-                  setIsMenuOpen(false);
-                }}
-                className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-secondary hover:text-primary hover:bg-sage/10 transition-colors cursor-pointer text-left"
-              >
-                <HelpCircle size={15} className="text-subdued" />
-                <span>Help & Safety Center</span>
-              </button>
-
-              <div className="pt-1 border-t border-light">
-                <button
-                  onClick={handleSignOut}
-                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer text-left font-medium"
-                >
-                  <LogOut size={15} />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </div>
-          )}
+          </div>
         </div>
       </div>
     </aside>
@@ -349,3 +308,9 @@ const Sidebar = ({ isCollapsed, setIsCollapsed }) => {
 };
 
 export default Sidebar;
+"""
+
+with open(sidebar_path, 'w') as f:
+    f.write(sidebar_content)
+
+print("Rebuilt Sidebar.jsx completely")

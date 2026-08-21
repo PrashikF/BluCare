@@ -1,20 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 
 @import "tailwindcss";
+@import "./chat-ui.css";
 
 :root {
     /* Standard Dark Theme (Default) */
     --bg-base: #0F0F12;
     --bg-surface: #15151A;
     --bg-card: #1B1B22;
-    --accent-sage: #7FE1C3;
-    --accent-lavender: #B6C4FF;
-    --accent-aqua: #A3E8ED;
+    --accent-sage: #6EE7B7;
+    --accent-lavender: #A78BFA;
+    --accent-aqua: #93C5FD;
     --text-primary: #ECECF1;
     --text-secondary: #B8BAC7;
     --text-subdued: #8A8D9E;
     --status-normal: #8FE3B0;
-    --status-risk: #F29B9B;
+    --status-risk: #e07474;
     --shadow-base: 0 12px 40px rgba(0, 0, 0, 0.4);
 
     /* Component Backgrounds & Borders */
@@ -26,9 +27,9 @@
     --input-bg: #18181F;
 
     /* Glows & Hover States */
-    --glow-sage: rgba(127, 225, 195, 0.4);
-    --glow-lavender: rgba(182, 196, 255, 0.4);
-    --glow-normal: rgba(143, 227, 176, 0.5);
+    --glow-sage: rgba(110, 231, 183, 0.25);
+    --glow-lavender: rgba(167, 139, 250, 0.25);
+    --glow-normal: rgba(147, 197, 253, 0.5);
 }
 
 /* Custom Scrollbar & Focus System */
@@ -50,10 +51,7 @@
     background: rgba(127, 225, 195, 0.4);
 }
 
-*:focus-visible {
-    outline: 2px solid var(--accent-sage) !important;
-    outline-offset: 2px !important;
-}
+
 
 [data-theme="light"] {
     /* High Contrast Light Theme */
@@ -172,11 +170,21 @@ body {
 
 @utility text-gradient {
     /* Dynamic theme-aware high-impact gradient */
-    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-sage) 50%, var(--accent-lavender) 100%);
+    background: linear-gradient(90deg, var(--accent-sage) 0%, var(--accent-aqua) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent !important;
     display: inline-block;
+}
+
+/* Propagate gradient to GSAP SplitText child wrappers so they
+   don't become invisible from inheriting only color:transparent */
+.text-gradient > div,
+.text-gradient > div > div {
+    background: inherit;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 @utility radial-gradient {

@@ -8,9 +8,9 @@
     --bg-base: #0F0F12;
     --bg-surface: #15151A;
     --bg-card: #1B1B22;
-    --accent-sage: #6EE7B7;
-    --accent-lavender: #A78BFA;
-    --accent-aqua: #93C5FD;
+    --accent-sage: #7FE1C3;
+    --accent-lavender: #B6C4FF;
+    --accent-aqua: #A3E8ED;
     --text-primary: #ECECF1;
     --text-secondary: #B8BAC7;
     --text-subdued: #8A8D9E;
@@ -27,9 +27,9 @@
     --input-bg: #18181F;
 
     /* Glows & Hover States */
-    --glow-sage: rgba(110, 231, 183, 0.25);
-    --glow-lavender: rgba(167, 139, 250, 0.25);
-    --glow-normal: rgba(147, 197, 253, 0.5);
+    --glow-sage: rgba(127, 225, 195, 0.25);
+    --glow-lavender: rgba(182, 196, 255, 0.25);
+    --glow-normal: rgba(143, 227, 176, 0.5);
 }
 
 /* Custom Scrollbar & Focus System */
@@ -169,8 +169,8 @@ body {
 }
 
 @utility text-gradient {
-    /* Dynamic theme-aware high-impact gradient */
-    background: linear-gradient(90deg, var(--accent-sage) 0%, var(--accent-aqua) 100%);
+    /* Master gradient: off-white → mint/sage → soft lavender at 135° */
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent-sage) 50%, var(--accent-lavender) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent !important;

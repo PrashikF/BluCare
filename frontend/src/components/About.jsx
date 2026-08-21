@@ -75,7 +75,7 @@ const About = () => {
 						</p>
 
 						<div className="flex items-end gap-4">
-							<p className="md:text-5xl text-3xl font-bold text-primary">
+							<p className="md:text-5xl text-3xl font-medium text-primary">
 								<span className="text-gradient">120k+</span>
 							</p>
 							<p className="text-xs text-subdued uppercase tracking-widest mb-2">

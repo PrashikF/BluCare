@@ -10,7 +10,7 @@ export const BrandLogo = ({ collapsed = false, className = "", noLink = false, s
       )}
 
       <span
-        className={`text-primary font-medium text-base tracking-tight whitespace-nowrap transition-all duration-250 ease-in-out ${
+        className={`text-primary font-medium text-[1.1rem] tracking-[-0.01em] whitespace-nowrap transition-all duration-250 ease-in-out ${
           collapsed ? 'opacity-0 w-0 overflow-hidden pointer-events-none' : 'opacity-100 w-auto'
         }`}
       >

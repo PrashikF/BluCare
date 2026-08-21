@@ -72,25 +72,25 @@ const Contact = () => {
 				<div className="footer-info grid grid-cols-1 md:grid-cols-3 gap-12 mt-20 border-t border-light pt-20">
 					<div className="text-center md:text-left">
 						<h4 className="text-subdued uppercase tracking-widest text-xs font-semibold mb-4">Availability</h4>
-						<p className="text-primary font-light">24/7 Intelligent AI Support</p>
-						<p className="text-secondary font-light">Global Clinical Access</p>
+						<p className="text-primary font-light text-lg md:text-3xl">24/7 Intelligent AI Support</p>
+						<p className="text-secondary font-light text-lg md:text-3xl">Global Clinical Access</p>
 					</div>
 					<div className="text-center">
 						<h4 className="text-subdued uppercase tracking-widest text-xs font-semibold mb-4">System Status</h4>
 						<div className="flex items-center justify-center gap-2">
 							<div className="brand-dot"></div>
-							<p className="text-primary font-light">All Systems Operational</p>
+							<p className="text-primary font-light text-lg md:text-3xl">All Systems Operational</p>
 						</div>
 					</div>
 					<div className="text-center md:text-right">
 						<h4 className="text-subdued uppercase tracking-widest text-xs font-semibold mb-4">Contact</h4>
-						<p className="text-primary font-light">support@ragblucare.ai</p>
-						<p className="text-secondary font-light">+91 9403871129</p>
+						<p className="text-primary font-light text-lg md:text-3xl">support@ragblucare.ai</p>
+						<p className="text-secondary font-light text-lg md:text-3xl">+91 9403871129</p>
 					</div>
 				</div>
 
 				<div className="mt-24 pt-8 border-t border-light flex flex-col md:flex-row justify-between items-center gap-6">
-					<p className="text-subdued text-xs tracking-wider">© 2026 BLUCARE+ SYSTEMS. ALL RIGHTS RESERVED.</p>
+					<p className="text-subdued text-xs tracking-wider font-light">© 2026 BLUCARE+ SYSTEMS. ALL RIGHTS RESERVED.</p>
 					<div className="flex gap-8">
 						<a href="#" className="text-subdued hover:text-lavender transition-colors text-xs uppercase tracking-widest font-medium">Privacy</a>
 						<a href="#" className="text-subdued hover:text-lavender transition-colors text-xs uppercase tracking-widest font-medium">Clinical Terms</a>

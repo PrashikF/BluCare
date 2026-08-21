@@ -42,7 +42,7 @@ const Hero = () => {
 
 			if (subtitleEl) {
 				paragraphSplit = new SplitText(subtitleEl, { type: "lines" });
-				// Removed text-gradient class addition that was causing invisibility
+				paragraphSplit.lines.forEach((line) => line.classList.add("text-gradient"));
 				gsap.fromTo(paragraphSplit.lines,
 					{ opacity: 0, y: 40 },
 					{
@@ -149,14 +149,13 @@ const Hero = () => {
 								<p className="text-secondary uppercase tracking-[0.2em] font-medium text-xs">
 									Clinical Intelligence Platform
 								</p>
-								<div className="subtitle font-medium text-xl md:text-2xl">
-									<div className="text-sage">Advanced Diagnostics</div>
-									<div className="text-aqua/90">Gentle Human Care</div>
-								</div>
+								<p className="subtitle font-medium text-xl md:text-2xl">
+									Advanced Diagnostics <br className="hidden md:block" /> Gentle Human Care
+								</p>
 							</div>
 
 							<div className="view-cocktails lg:max-w-xs text-center lg:text-left">
-								<p className="subtitle text-sm md:text-base mb-6">
+								<p className="hero-desc text-sm md:text-base mb-6 text-secondary">
 									BluCare+ harmonizes medical precision with empathetic understanding, providing a safe and intelligent space for your health journey.
 								</p>
 								<a

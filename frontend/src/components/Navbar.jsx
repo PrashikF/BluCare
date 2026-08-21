@@ -64,7 +64,7 @@ const Navbar = () => {
             <div className="nav-links flex items-center gap-6">
               <Link
                 to={isSignedIn ? '/app/chat' : '/sign-in'}
-                className="cursor-pointer text-nowrap text-[0.9rem] transition-colors text-subdued hover:text-lavender no-underline font-medium"
+                className="cursor-pointer text-nowrap text-[0.9rem] transition-colors text-subdued hover:text-lavender no-underline"
               >
                 {isSignedIn ? 'AI Assistant Workspace' : 'Start AI Chat'}
               </Link>
@@ -72,7 +72,7 @@ const Navbar = () => {
               {isSignedIn ? (
                 <Link
                   to="/app/hospitals"
-                  className="cursor-pointer text-nowrap text-[0.9rem] transition-colors text-subdued hover:text-lavender no-underline font-medium"
+                  className="cursor-pointer text-nowrap text-[0.9rem] transition-colors text-subdued hover:text-lavender no-underline"
                 >
                   Ambulance Assistance
                 </Link>
@@ -127,7 +127,7 @@ const Navbar = () => {
                       {(user?.fullName || user?.firstName || 'P').charAt(0)}
                     </div>
                   )}
-                  <span className="text-[0.85rem] font-medium text-primary">
+                  <span className="text-[0.85rem] text-secondary">
                     Hi, {user?.firstName || user?.fullName || 'Patient'}
                   </span>
                 </Link>
